@@ -1,9 +1,13 @@
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
+
 from movies.models import MovieNightInvitation
 from movies.tasks import send_invitation, send_attendance_change
 
 USE_CELERY = False
 
 
+@receiver(post_save, sender=MovieNightInvitation, dispatch_uid="invitation_create")
 def invitation_create(sender, created, instance, **kwargs):
     if created:
         if USE_CELERY:
@@ -12,6 +16,7 @@ def invitation_create(sender, created, instance, **kwargs):
             send_invitation(instance.pk)
 
 
+@receiver(pre_save, sender=MovieNightInvitation, dispatch_uid="invitation_update")
 def invitation_update(sender, instance, **kwargs):
     if not instance.pk:
         # is a new one

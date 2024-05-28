@@ -23,8 +23,10 @@
 </head>
 <body>
 {% include "_navbar.html" %}
+<div class="container-fluid pt-3">
     {% block content %}
     {% endblock %}
+</div>
 {% include "_bootstrap_scripts.html" %}
 {% block scripts %}
 {% endblock %}
